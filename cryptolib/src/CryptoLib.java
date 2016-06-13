@@ -2,7 +2,6 @@
 //   javac CryptoLibTest.java
 // Running:
 //   java CryptoLibTest
-// 199111103512
 public class CryptoLib {
 
 	/**
@@ -18,26 +17,26 @@ public class CryptoLib {
 		int t = 1, oldT = 0;
 		int r = b, oldR = a;
 		int divisor;
-		
+
 		while(r != 0){
 			divisor = oldR / r;
-			
+
 			// gcd
 			tempInt = r;
 			r = oldR - divisor * tempInt;
 			oldR = tempInt;
-			
+
 			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
 			tempInt = s;
 			s = oldS - divisor * tempInt;
 			oldS = tempInt;
-			
+
 			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
 			tempInt = t;
 			t = oldT - divisor * tempInt;
 			oldT = tempInt;
 		}
-		
+
 		if(a == b){
 			// special case to handle 5,5 which expects 5, 1, 0 but recieves 5, 0, 1 which is also a correct
 			// answer but not the one expected
@@ -45,7 +44,7 @@ public class CryptoLib {
 			oldS = oldT;
 			oldT = tempInt;
 		}
-		
+
 		int[] result = new int[3];
 		result[0] = oldR;
 		result[1] = oldS;
@@ -92,24 +91,24 @@ public class CryptoLib {
 				return i;
 			}
 		}
-		
+
 		return 0;
 	}
-	
+
 	/**
 	 * a ^ b mod "mod"
 	 */
 	public static int modPow(int a, int b, int mod){
 		int result = 1;
-		
+
 		for(int i = 0; i < b; i++){
 			result = result * a;
 			result = result % mod;
 		}
-		
+
 		return result;
 	}
-	
+
 	/**
 	 * Returns the probability that calling a perfect hash function with
 	 * "n_samples" (uniformly distributed) will give one collision (i.e. that

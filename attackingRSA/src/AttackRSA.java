@@ -2,7 +2,6 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.math.BigInteger;
 
-// 9111103512
 public class AttackRSA {
 
 	public static void main(String[] args) {
@@ -27,21 +26,21 @@ public class AttackRSA {
 		BigInteger m = recoverMessage(N, e, c);
 		System.out.println("Recovered message: " + m);
 		System.out.println("Decoded text: " + decodeMessage(m));
-		
-		
+
+
 		/////////////////////////////
 //		int mods[] = {3, 4, 5};
 //		int equalMods[] = {2, 2, 1};
 //		int mods[] = {3, 5, 7};
 //		int equalMods[] = {2, 3, 2};
 		// int mods[] = {2, 3, 4, 5, 6, 7};
-		// int equalMods[] = {1, 1, 1, 1, 1, 0}; this is equivalent to the system below because 
+		// int equalMods[] = {1, 1, 1, 1, 1, 0}; this is equivalent to the system below because
 		// lcm(2, 3, 4, 5, 6, 7) == 60
 //		int mods[] = {7, 60};
 //		int equalMods[] = {0, 1};
 //		int[] result = CryptoLibExtended.chineseRemainderTheorem(mods, equalMods);
 //		System.out.println("result[0]: " + result[0] + " result[1]: " + result[1]);
-//		
+//
 //		BigInteger val1 = new BigInteger("-9");
 //		BigInteger val2 = new BigInteger("823");
 //		BigInteger[] result2 = CryptoLibExtended.EEABI(val1, val2);
@@ -58,7 +57,7 @@ public class AttackRSA {
 	 * Tries to recover the message based on the three intercepted cipher texts.
 	 * In each array the same index refers to same receiver. I.e. receiver 0 has
 	 * modulus N[0], public key d[0] and received message c[0], etc.
-	 * 
+	 *
 	 * @param N
 	 *            The modulus of each receiver.
 	 * @param e
@@ -74,16 +73,16 @@ public class AttackRSA {
 		// c1 = m^3 (mod N1)
 		// c2 = m^3 (mod N2)
 		// c3 = m^3 (mod N3)
-		
+
 		// m^3 = c1 (mod N1)
 		// m^3 = c2 (mod N2)
 		// m^3 = c3 (mod N3)
 		// m = cbrt(m^3)
-		
-		
+
+
 		BigInteger[] result = CryptoLibExtended.chineseRemainderTheoremBI(N, c);
 		// System.out.println("result[0]: " + result[0] + " result[1]: " + result[1]);
-		
+
 		return CubeRoot.cbrt(result[0]);
 	}
 
