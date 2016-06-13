@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+<fullyQualifiedTypeName name="java.lang.IndexOutOfBoundsException"/>
+<fullyQualifiedTypeName name="java.lang.Exception"/>
+<fullyQualifiedTypeName name="java.util.Scanner"/>
+<fullyQualifiedTypeName name="javax.xml.crypto.dsig.CanonicalizationMethod"/>
+<fullyQualifiedTypeName name="CryptoLib"/>
+<fullyQualifiedTypeName name="java.math.BigInteger"/>
+<fullyQualifiedTypeName name="CryptoLibExtended"/>
+<fullyQualifiedTypeName name="CubeRoot"/>
+</qualifiedTypeNameHistroy>

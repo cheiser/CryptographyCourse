@@ -1,0 +1,24 @@
+import java.util.Scanner;
+
+
+public class LagrangeInterpolation {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner s = new Scanner(System.in);
+		System.out.println("how many points(x, y) will you enter?");
+		int numberOfPoints = s.nextInt();
+		int[] x = new int[numberOfPoints + 1];
+		int[] y = new int[numberOfPoints + 1];
+		for(int i = 0; i < numberOfPoints; i++){
+			System.out.println("enter x for point " + i + ":");
+			
+
+			System.out.println("enter y for point " + i + ":");
+		}
+	}
+
+}

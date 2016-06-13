@@ -1,0 +1,38 @@
+import java.util.Scanner;
+
+
+public class LagrangeInterpolation {
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner s = new Scanner(System.in);
+		System.out.println("how many points(x, y) will you enter?:");
+		int sum = 0, wantedX = 0, numberOfPoints = s.nextInt();
+		int[] x = new int[numberOfPoints + 1];
+		int[] y = new int[numberOfPoints + 1];
+		for(int i = 0; i < numberOfPoints; i++){
+			System.out.println("enter x for point " + i + ":");
+			x[i] = s.nextInt();
+			System.out.println("enter y for point " + i + ":");
+			y[i] = s.nextInt(); // this is equivalent of f(x)
+		}
+		
+		System.out.println("enter x you want y for:");
+		wantedX = s.nextInt();
+		
+		for(int i = 0; i < numberOfPoints; i++){
+			int part = 1;
+			for(int j = 0; j < numberOfPoints; j++){
+				if(i != j){
+					part = part * ((wantedX - x[j]) / (x[i] - x[j]));
+				}
+			}
+			
+			sum = y[i] * part;
+		}
+	}
+
+}

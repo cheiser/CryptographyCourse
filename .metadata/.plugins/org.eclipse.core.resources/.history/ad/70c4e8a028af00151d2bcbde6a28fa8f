@@ -1,0 +1,84 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+
+import javax.xml.bind.DatatypeConverter;
+
+public class CBCXor {
+
+	public static void main(String[] args) {
+		String filename = "input.txt";
+		byte[] first_block = null;
+		byte[] encrypted = null;
+		try {
+			BufferedReader br = new BufferedReader(new FileReader(filename));
+			first_block = br.readLine().getBytes();
+			encrypted = DatatypeConverter.parseHexBinary(br.readLine());
+			br.close();
+		} catch (Exception err) {
+			System.err.println("Error handling file.");
+			err.printStackTrace();
+			System.exit(1);
+		}
+		String m = recoverMessage(first_block, encrypted);
+		System.out.println("Recovered message: " + m);
+		
+		byte[] arr1 = new byte[] { 1, 0, 1, 0, 1, 1 };
+		byte[] arr2 = new byte[] { 1, 0, 0, 1, 0, 1 };
+		byte[] xored = xorArrays(arr1, arr2);
+		System.out.print(" arr1: ");
+		printByteArray(arr1);
+		System.out.print("\n arr2: ");
+		printByteArray(arr2);
+		System.out.print("\nxored: ");
+		printByteArray(xored);
+		System.out.println("the key: ");
+		printByteArray(findKey(first_block, encrypted));
+	}
+
+	/**
+	 * Recover the encrypted message (CBC encrypted with XOR, block size = 12).
+	 * 
+	 * @param first_block
+	 *            We know that this is the value of the first block of plain
+	 *            text.
+	 * @param encrypted
+	 *            The encrypted text, of the form IV | C0 | C1 | ... where each
+	 *            block is 12 bytes long.
+	 */
+	private static String recoverMessage(byte[] first_block, byte[] encrypted) {
+		return new String(encrypted);
+	}
+	
+	private static byte[] findKey(byte[] first_block, byte[] encrypted){
+		byte[] iv = new byte[first_block.length];
+		byte[] first_cipher = new byte[first_block.length];
+		byte[] key = new byte[first_block.length];
+		System.arraycopy(encrypted, 0, iv, 0, iv.length); // get the first IV block from the cipher text
+		System.arraycopy(encrypted, iv.length, first_cipher, 0, iv.length); // get the cipher of first_block
+		
+		// Ci = k + (Mi + Ci-1)
+		// k = Ci + (Mi + Ci-1), Ci is the first cipher block, Mi is the message for the first cipher block,
+		// Ci-1 is in this case the IV and k is naturally the key.
+		key = xorArrays(first_cipher, xorArrays(first_block, iv));
+		
+		return key;
+	}
+	
+	private static byte[] xorArrays(byte[] arr1, byte[] arr2) {
+//		if(arr1.length != arr2.length)
+//			throw new IndexOutOfBoundsException("different sized arrays");
+		byte[] xored = new byte[arr1.length];
+		
+		for(int i = 0; i < arr1.length; i++){
+			xored[i] = (byte) (arr1[i] ^ arr2[i]);
+		}
+		
+		return xored;
+	}
+	
+	private static void printByteArray(byte[] arr){
+		for(int i = 0; i < arr.length; i++){
+			System.out.print(arr[i] + " ");
+		}
+	}
+}

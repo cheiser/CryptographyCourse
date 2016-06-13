@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename local variable &apos;quotient&apos; in &apos;CryptoLib.EEA(...)&apos; to &apos;divisor&apos;&#x0D;&#x0A;- Original project: &apos;cryptolib&apos;&#x0D;&#x0A;- Original element: &apos;CryptoLib.EEA(int, int).quotient&apos;&#x0D;&#x0A;- Renamed element: &apos;quotient&apos;&#x0D;&#x0A;- Update references to refactored element" description="Rename local variable &apos;quotient&apos;" id="org.eclipse.jdt.ui.rename.local.variable" input="/src&lt;{CryptoLib.java[CryptoLib~EEA~I~I@quotient!619!631!623!630!I!0!false" name="divisor" references="true" stamp="1451399741845" version="1.0"/>
+</session>

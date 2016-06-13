@@ -1,0 +1,357 @@
+import java.math.BigInteger;
+
+public class CryptoLibExtended {
+
+	/**
+	 * Returns an array "result" with the values "result[0] = gcd",
+	 * "result[1] = s" and "result[2] = t" such that "gcd" is the greatest
+	 * common divisor of "a" and "b", and "gcd = a * s + b * t".
+	 **/
+	public static int[] EEA(int a, int b) {
+		// Note: as you can see in the test suite,
+		// your function should work for any (positive) value of a and b.
+		int tempInt;
+		int s = 0, oldS = 1;
+		int t = 1, oldT = 0;
+		int r = b, oldR = a;
+		int divisor;
+		
+		while(r != 0){
+			divisor = oldR / r;
+			
+			// gcd
+			tempInt = r;
+			r = oldR - divisor * tempInt;
+			oldR = tempInt;
+			
+			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
+			tempInt = s;
+			s = oldS - divisor * tempInt;
+			oldS = tempInt;
+			
+			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
+			tempInt = t;
+			t = oldT - divisor * tempInt;
+			oldT = tempInt;
+		}
+		
+		if(a == b){
+			// special case to handle 5,5 which expects 5, 1, 0 but recieves 5, 0, 1 which is also a correct
+			// answer but not the one expected
+			tempInt = oldS;
+			oldS = oldT;
+			oldT = tempInt;
+		}
+		
+		int[] result = new int[3];
+		result[0] = oldR;
+		result[1] = oldS;
+		result[2] = oldT;
+		return result;
+	}
+	
+	
+	/**
+	 * FOR BIGINTEGER!
+	 * Returns an array "result" with the values "result[0] = gcd",
+	 * "result[1] = s" and "result[2] = t" such that "gcd" is the greatest
+	 * common divisor of "a" and "b", and "gcd = a * s + b * t".
+	 **/
+	public static BigInteger[] EEABI(BigInteger a, BigInteger b) {
+		// Note: as you can see in the test suite,
+		// your function should work for any (positive) value of a and b.
+		BigInteger tempInt;
+		BigInteger s = new BigInteger("0");
+		BigInteger oldS = new BigInteger("1");
+		BigInteger t = new BigInteger("1");
+		BigInteger oldT = new BigInteger("0");
+		BigInteger r = b;
+		BigInteger oldR = a;
+		BigInteger divisor;
+		BigInteger zeroConst = new BigInteger("0");
+		while(!(r.compareTo(zeroConst) == 0)){
+			divisor = oldR.divide(r);// oldR / r;
+			
+			// gcd
+			tempInt = r;
+			r = oldR.subtract(divisor.multiply(tempInt)); // oldR - divisor * tempInt;
+			oldR = tempInt;
+			
+			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
+			tempInt = s;
+			s = oldS.subtract(divisor.multiply(tempInt)); // oldS - divisor * tempInt;
+			oldS = tempInt;
+			
+			// one of the multipliers in gcd = a * multiplier1 + b * multiplier2
+			tempInt = t;
+			t = oldT.subtract(divisor.multiply(tempInt));// oldT - divisor * tempInt;
+			oldT = tempInt;
+		}
+		
+		if(a == b){
+			// special case to handle 5,5 which expects 5, 1, 0 but recieves 5, 0, 1 which is also a correct
+			// answer but not the one expected
+			tempInt = oldS;
+			oldS = oldT;
+			oldT = tempInt;
+		}
+		
+		BigInteger[] result = new BigInteger[3];
+		result[0] = oldR;
+		result[1] = oldS;
+		result[2] = oldT;
+		return result;
+	}
+	
+
+	/**
+	 * Returns Euler's Totient for value "n".
+	 **/
+	public static int EulerPhi(int n) {
+		int numberOfCoprimes = 0;
+		for(int i = 1; i < n; i++){
+			// if n and i is coprime (i.e. GDC(n, i) == 1) increase counter
+			if(EEA(n, i)[0] == 1)
+				numberOfCoprimes++;
+		}
+		return numberOfCoprimes;
+	}
+
+	/**
+	 * Returns the value "v" such that "n*v = 1 (mod m)". Returns 0 if the
+	 * modular inverse does not exist.
+	 **/
+	public static int ModInv(int n, int m) {
+		int eeaResult = EEA(n, m)[1];
+		if(n < 0){
+			eeaResult = -eeaResult; // the inverse of a negative number is negative not positive...
+		}
+		if(eeaResult < 0){
+			eeaResult = m + eeaResult; // -number mod m == m + -number
+		}
+		return eeaResult;
+	}
+	
+	/**
+	 * FOR BIGINTEGER
+	 * Returns the value "v" such that "n*v = 1 (mod m)". Returns 0 if the
+	 * modular inverse does not exist.
+	 **/
+	public static BigInteger ModInvBI(BigInteger n, BigInteger m) {
+		BigInteger eeaResult = EEABI(n, m)[1];
+		BigInteger zeroConst = new BigInteger("0");
+		if(n.compareTo(zeroConst) < 0){
+			eeaResult = eeaResult.negate(); // the inverse of a negative number is negative not positive...
+		}
+		if(eeaResult.compareTo(zeroConst) < 0){
+			eeaResult = m.add(eeaResult); // m + eeaResult; // -number mod m == m + -number
+		}
+		return eeaResult;
+	}
+
+	/**
+	 * Returns 0 if "n" is a Fermat Prime, otherwise it returns the lowest
+	 * Fermat Witness. Tests values from 2 (inclusive) to "n/3" (exclusive).
+	 **/
+	public static int FermatPT(int n) {
+		for(int i = 2; i < n/3; i++){
+			// if i ^ n-1 mod n == 1
+			if(modPow(i, n-1, n) != 1){
+				return i;
+			}
+		}
+		
+		return 0;
+	}
+	
+	/**
+	 * a ^ b mod "mod"
+	 */
+	public static int modPow(int a, int b, int mod){
+		int result = 1;
+		
+		for(int i = 0; i < b; i++){
+			result = result * a;
+			result = result % mod;
+		}
+		
+		return result;
+	}
+	
+	/**
+	 * Returns the probability that calling a perfect hash function with
+	 * "n_samples" (uniformly distributed) will give one collision (i.e. that
+	 * two samples result in the same hash) -- where "size" is the number of
+	 * different output values the hash function can produce.
+	 **/
+	public static double HashCP(double n_samples, double size) {
+		// The probability that any two samples (out of n possible) result in the same hash is the same as the
+		// probability that not all of them is unique, i.e. 1 - "the probability that all hashes are unique".
+		// This probability is easier to calculate. The first hash can be any of the available hashes
+		// (i.e. size), the next hash can be any hash other than that hash (i.e. any of size - 1 values, so
+		// the probability that we pick two that is unique is (size - 1) / size), the next hash can
+		// be any hash other than the first two (i.e. size - 2) and so on.
+		double currentSum = 1.0;
+		for(int i = 1; i < n_samples; i++){
+			double nValue = (size - i) / size;
+			currentSum = currentSum * nValue;
+		}
+		return 1.0 - currentSum;
+	}
+	
+	/**
+	 * Finds the resulting x when we want to find to solve a problem like
+	 * x == 2 mod 3
+	 * 		x == 2 mod 4
+	 * 			x == 1 mod 5
+	 * 
+	 * @param mods will in the above example be {3, 4, 5}, it is assumed that all parameters are non-negative
+	 * @param equalMods will in the above example be {2, 2, 1}
+	 * @return an array of size 2, where the content at the first index is the smallest x that solves 
+	 * the problem and the content of the second index is the multiple at which the next xes that work exist.
+	 * i.e. x = index1 mod index2 so we can multiply index1 with index2 and still have a valid solution to the
+	 * problem.
+	 */
+	public static int[] chineseRemainderTheorem(int[] mods, int[] equalMods){
+		int[] result = new int[2];
+		int[] newMods = new int[mods.length];
+		if(!isRelativelyPrime(mods)){
+			// TODO: should throw exception....
+			System.out.println("cannot peform CRT on the given input because all the given numbers are not" + 
+					"coprime"); // a solution could still exist though...
+			System.exit(1);
+		}
+		
+		result[1] = 1;
+		for(int i = 0; i < newMods.length; i++){
+			newMods[i] = 1;
+			result[1] = result[1] * mods[i];
+			for(int j = 0; j < newMods.length; j++){
+				if(i != j){
+					newMods[i] = newMods[i] * mods[j];
+				}
+			}
+		}
+		
+		// go through each number in newMods and make sure that newMods[i] mod mods[i] == equalMods[i] and
+		// correct those that are not. Do this by finding the multiple that makes the number
+		// newMods[i] = 1 mod equalMods[i] true, this  can be found by the modular inverse of newMods[i] and
+		// mods[i]. This number is then simply multiplied with mods[i] to make it what we wanted.
+		
+		int sum = 0;
+		for(int i = 0; i < newMods.length; i++){
+			if(newMods[i] % mods[i] != equalMods[i]){
+				int modInv = ModInv(newMods[i], mods[i]);
+				newMods[i] = newMods[i] * modInv;
+				newMods[i] = newMods[i] * equalMods[i];
+			}
+			sum += newMods[i];
+		}
+		
+		
+		result[0] = sum % result[1];
+		
+		
+		return result;
+	}
+	
+	
+	/**
+	 * FOR BIGINTEGER
+	 * Finds the resulting x when we want to find to solve a problem like
+	 * x == 2 mod 3
+	 * 		x == 2 mod 4
+	 * 			x == 1 mod 5
+	 * 
+	 * @param mods will in the above example be {3, 4, 5}, it is assumed that all parameters are non-negative
+	 * @param equalMods will in the above example be {2, 2, 1}
+	 * @return an array of size 2, where the content at the first index is the smallest x that solves 
+	 * the problem and the content of the second index is the multiple at which the next xes that work exist.
+	 * i.e. x = index1 mod index2 so we can multiply index1 with index2 and still have a valid solution to the
+	 * problem.
+	 */
+	public static int[] chineseRemainderTheoremBI(BigInteger[] mods, BigInteger[] equalMods){
+		BigInteger[] result = new BigInteger[2];
+		BigInteger[] newMods = new BigInteger[mods.length];
+		if(!isRelativelyPrimeBI(mods)){
+			// TODO: should throw exception....
+			System.out.println("cannot peform CRT on the given input because all the given numbers are not" + 
+					"coprime"); // a solution could still exist though...
+			System.exit(1);
+		}
+		
+		result[1] = new BigInteger("1");
+		for(int i = 0; i < newMods.length; i++){
+			newMods[i] = new BigInteger("1");
+			result[1] = result[1].multiply(mods[i]); // result[1] * mods[i];
+			for(int j = 0; j < newMods.length; j++){
+				if(i != j){
+					newMods[i] = newMods[i].multiply(mods[j]);// newMods[i] * mods[j];
+				}
+			}
+		}
+		
+		// go through each number in newMods and make sure that newMods[i] mod mods[i] == equalMods[i] and
+		// correct those that are not. Do this by finding the multiple that makes the number
+		// newMods[i] = 1 mod equalMods[i] true, this  can be found by the modular inverse of newMods[i] and
+		// mods[i]. This number is then simply multiplied with mods[i] to make it what we wanted.
+		
+		BigInteger sum = new BigInteger("0");
+		for(int i = 0; i < newMods.length; i++){
+			if(newMods[i].mod(mods[i]).compareTo(equalMods[i]) != 0){
+				BigInteger modInv = ModInvBI(newMods[i], mods[i]);
+				newMods[i] = newMods[i].multiply(modInv); // newMods[i] * modInv;
+				newMods[i] = newMods[i].multiply(equalMods[i]);// newMods[i] * equalMods[i];
+			}
+			sum = sum.add(newMods[i]); // sum += newMods[i];
+		}
+		
+		
+		result[0] = sum.mod(result[1]);// sum % result[1];
+		
+		
+		return result;
+	}
+	
+	
+	
+	
+	/**
+	 * checks so all the numbers in mods are relatively prime, i.e. for all numbers x, y (x != y)
+	 * in mods gcd(x, y) = 1
+	 * @param mods an array of numbers that we want to be coprime
+	 * @return true if all the numbers in the list is coprime, false otherwise
+	 */
+	public static boolean isRelativelyPrime(int[] mods){
+		for(int i = 0; i < mods.length; i++){
+			for(int j = i+1; j < mods.length; j++){
+				if(mods[i] != mods[j] && EEA(mods[i], mods[j])[0] != 1){
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+	
+	/**
+	 * FOR BIGINTEGER
+	 * checks so all the numbers in mods are relatively prime, i.e. for all numbers x, y (x != y)
+	 * in mods gcd(x, y) = 1
+	 * @param mods an array of numbers that we want to be coprime
+	 * @return true if all the numbers in the list is coprime, false otherwise
+	 */
+	public static boolean isRelativelyPrimeBI(BigInteger[] mods){
+		BigInteger oneConst = new BigInteger("1");
+		for(int i = 0; i < mods.length; i++){
+			for(int j = i+1; j < mods.length; j++){
+				if((mods[i].compareTo(mods[j]) != 0) && EEABI(mods[i], mods[j])[0].compareTo(oneConst) != 0){
+					return false;
+				}
+			}
+		}
+		
+		return true;
+	}
+
+}
